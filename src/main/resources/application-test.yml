@@ -8,8 +8,32 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-google-client-id
+            client-secret: test-google-client-secret
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
 
 security:
   jwt:
-    secret: test-secret-key-test-secret-key-123
+    secret: test-secret-key-test-secret-key-1234567890
     access-token-expire-ms: 3600000
+    refresh-token-expire-ms: 1209600000
+
+app:
+  cors:
+    allowed-origins: http://localhost:3000
+  auth:
+    allowed-email-domains: handong.ac.kr,handong.edu
+    frontend-redirect-url: http://localhost:3000/auth/callback
