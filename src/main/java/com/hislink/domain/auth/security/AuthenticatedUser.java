@@ -1,6 +1,7 @@
 package com.hislink.domain.auth.security;
 
 import com.hislink.domain.user.entity.Role;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
+@Hidden
 @Getter
 public class AuthenticatedUser {
 

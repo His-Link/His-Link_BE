@@ -1,8 +1,6 @@
 package com.hislink.domain.sample.service;
 
-import com.hislink.domain.sample.dto.SampleItemCreateRequest;
 import com.hislink.domain.sample.dto.SampleItemResponse;
-import com.hislink.domain.sample.dto.SampleItemUpdateRequest;
 import com.hislink.domain.sample.entity.SampleItem;
 import com.hislink.domain.sample.repository.SampleItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +18,10 @@ public class SampleItemService {
     private final SampleItemRepository sampleItemRepository;
 
     @Transactional
-    public SampleItemResponse create(SampleItemCreateRequest request) {
+    public SampleItemResponse create(String title, String description) {
         SampleItem sampleItem = SampleItem.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
+                .title(title)
+                .description(description)
                 .build();
         return SampleItemResponse.from(sampleItemRepository.save(sampleItem));
     }
@@ -41,9 +39,9 @@ public class SampleItemService {
     }
 
     @Transactional
-    public SampleItemResponse update(Long id, SampleItemUpdateRequest request) {
+    public SampleItemResponse update(Long id, String title, String description) {
         SampleItem sampleItem = getById(id);
-        sampleItem.update(request.getTitle(), request.getDescription());
+        sampleItem.update(title, description);
         return SampleItemResponse.from(sampleItem);
     }
 
