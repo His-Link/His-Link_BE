@@ -40,6 +40,8 @@ app:
   auth:
     allowed-email-domains: ${ALLOWED_EMAIL_DOMAINS}
     frontend-redirect-url: ${FRONTEND_AUTH_CALLBACK_URL}
+  dev:
+    auth-bypass: false
 
 springdoc:
   swagger-ui:
