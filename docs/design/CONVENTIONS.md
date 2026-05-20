@@ -156,7 +156,7 @@ DEV_USER_EMAIL=dev@handong.ac.kr
 ```text
 GET /api/community/posts/**
 GET /api/community/posts/*/comments
-GET /api/main/dashboard
+GET /api/main/dashboard  (✅)
 ```
 
 POST/PUT/DELETE는 authenticated.
@@ -175,9 +175,10 @@ com.hislink
 ├── domain
 │   ├── auth/          (✅)
 │   ├── user/          (✅)
-│   ├── community/     (🔜 2단계)
-│   ├── lab/           (🔜 3단계)
-│   └── recruitment/   (🔜 4단계)
+│   ├── community/     (✅)
+│   ├── main/          (✅ AR2)
+│   ├── lab/           (🔜 AR4)
+│   └── recruitment/   (🔜 AR5)
 ```
 
 ---

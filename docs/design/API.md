@@ -216,11 +216,13 @@ Base: `/api/recruitment/posts`
 
 ---
 
-## 5. 메인 대시보드 (AR2) 🔜
+## 5. 메인 대시보드 (AR2) ✅
 
 | Method | Path | Auth | 설명 |
 |--------|------|------|------|
 | GET | `/api/main/dashboard` | 🌐 | 메인 카드용 집계 데이터 |
+
+> Lab·모집 목록은 AR4/AR5 구현 전까지 `[]` 입니다. `latestCommunityPosts`만 최신 8건 채웁니다.
 
 **Response `data`**
 ```json

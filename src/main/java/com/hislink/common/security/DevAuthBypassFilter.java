@@ -60,6 +60,7 @@ public class DevAuthBypassFilter extends OncePerRequestFilter {
                 || path.equals("/api/auth/google")
                 || path.equals("/api/auth/refresh")
                 || path.equals("/api/auth/logout")
+                || path.equals("/api/main/dashboard")
                 || path.startsWith("/actuator/");
     }
 }
