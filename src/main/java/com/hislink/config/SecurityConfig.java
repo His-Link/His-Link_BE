@@ -1,5 +1,6 @@
 package com.hislink.config;
 
+import com.hislink.common.security.DevAuthBypassFilter;
 import com.hislink.common.security.JwtAuthenticationFilter;
 import com.hislink.domain.auth.handler.OAuth2AuthenticationFailureHandler;
 import com.hislink.domain.auth.handler.OAuth2AuthenticationSuccessHandler;
@@ -22,7 +23,10 @@ public class SecurityConfig {
     private static final String[] PUBLIC_GET_PATHS = {
             "/api/auth/google",
             "/oauth2/**",
-            "/login/oauth2/**"
+            "/login/oauth2/**",
+            "/api/community/posts",
+            "/api/community/posts/**",
+            "/api/main/dashboard"
     };
 
     private static final String[] PUBLIC_POST_PATHS = {
@@ -31,6 +35,7 @@ public class SecurityConfig {
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final DevAuthBypassFilter devAuthBypassFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
@@ -62,7 +67,8 @@ public class SecurityConfig {
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(devAuthBypassFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

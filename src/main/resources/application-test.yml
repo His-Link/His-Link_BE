@@ -37,3 +37,5 @@ app:
   auth:
     allowed-email-domains: handong.ac.kr,handong.edu
     frontend-redirect-url: http://localhost:3000/auth/callback
+  dev:
+    auth-bypass: false

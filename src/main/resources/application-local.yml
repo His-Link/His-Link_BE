@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "optional:file:.env[.properties]"
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -6,10 +8,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
-    show-sql: false
-
-spring:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   security:
     oauth2:
       client:
@@ -31,17 +34,18 @@ spring:
 security:
   jwt:
     secret: ${JWT_SECRET}
-    access-token-expire-ms: ${JWT_ACCESS_EXPIRE_MS}
-    refresh-token-expire-ms: ${JWT_REFRESH_EXPIRE_MS}
+    access-token-expire-ms: ${JWT_ACCESS_EXPIRE_MS:3600000}
+    refresh-token-expire-ms: ${JWT_REFRESH_EXPIRE_MS:1209600000}
 
 app:
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
   auth:
-    allowed-email-domains: ${ALLOWED_EMAIL_DOMAINS}
-    frontend-redirect-url: ${FRONTEND_AUTH_CALLBACK_URL}
+    allowed-email-domains: ${ALLOWED_EMAIL_DOMAINS:handong.ac.kr,handong.edu}
+    frontend-redirect-url: ${FRONTEND_AUTH_CALLBACK_URL:http://localhost:3000/auth/callback}
   dev:
-    auth-bypass: false
+    auth-bypass: ${DEV_AUTH_BYPASS:true}
+    default-user-email: ${DEV_USER_EMAIL:dev@handong.ac.kr}
 
 springdoc:
   swagger-ui:
