@@ -17,3 +17,4 @@ logs/
 /tmp/
 hs_err_pid*
 *.hprof
+uploads/
