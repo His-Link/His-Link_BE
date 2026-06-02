@@ -26,7 +26,11 @@ public class SecurityConfig {
             "/login/oauth2/**",
             "/api/community/posts",
             "/api/community/posts/**",
-            "/api/main/dashboard"
+            "/api/lab/projects",
+            "/api/lab/projects/**",
+            "/api/tech-stacks",
+            "/api/main/dashboard",
+            "/uploads/**"
     };
 
     private static final String[] PUBLIC_POST_PATHS = {
