@@ -4,6 +4,7 @@ import com.hislink.domain.community.dto.CommunityPostSummaryResponse;
 import com.hislink.domain.community.entity.CommunityPost;
 import com.hislink.domain.community.repository.CommentRepository;
 import com.hislink.domain.community.repository.CommunityPostRepository;
+import com.hislink.domain.lab.service.ProjectService;
 import com.hislink.domain.main.dto.MainDashboardResponse;
 import com.hislink.domain.main.dto.ProjectSummaryResponse;
 import com.hislink.domain.main.dto.RecruitmentPostSummaryResponse;
@@ -25,15 +26,16 @@ public class MainDashboardService {
 
     private final CommunityPostRepository communityPostRepository;
     private final CommentRepository commentRepository;
+    private final ProjectService projectService;
 
     @Transactional(readOnly = true)
     public MainDashboardResponse getDashboard() {
         return new MainDashboardResponse(
-                emptyProjects(),
+                projectService.findLatestPreview(PREVIEW_SIZE),
                 fetchLatestCommunityPosts(),
                 emptyRecruitmentPosts(),
-                emptyProjects(),
-                emptyProjects()
+                projectService.findPopularPreview(PREVIEW_SIZE),
+                projectService.findTopFeedbackPreview(PREVIEW_SIZE)
         );
     }
 
@@ -49,10 +51,6 @@ public class MainDashboardService {
                 post,
                 commentRepository.countByPostId(post.getId())
         );
-    }
-
-    private static List<ProjectSummaryResponse> emptyProjects() {
-        return Collections.emptyList();
     }
 
     private static List<RecruitmentPostSummaryResponse> emptyRecruitmentPosts() {
