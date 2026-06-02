@@ -157,6 +157,9 @@ DEV_USER_EMAIL=dev@handong.ac.kr
 GET /api/community/posts/**
 GET /api/community/posts/*/comments
 GET /api/main/dashboard  (✅)
+GET /api/lab/projects/**
+GET /api/lab/projects/*/feedbacks
+GET /api/tech-stacks
 ```
 
 POST/PUT/DELETE는 authenticated.
@@ -177,7 +180,8 @@ com.hislink
 │   ├── user/          (✅)
 │   ├── community/     (✅)
 │   ├── main/          (✅ AR2)
-│   ├── lab/           (🔜 AR4)
+│   ├── lab/           (✅ AR4)
+│   ├── techstack/     (✅ 공통)
 │   └── recruitment/   (🔜 AR5)
 ```
 
