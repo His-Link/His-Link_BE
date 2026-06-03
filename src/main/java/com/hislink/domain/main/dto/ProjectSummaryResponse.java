@@ -1,6 +1,7 @@
 package com.hislink.domain.main.dto;
 
 import com.hislink.domain.community.dto.AuthorSummaryResponse;
+import com.hislink.domain.lab.entity.Project;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * AR4 Lab 목록 API와 동일한 형태 (메인 대시보드·향후 /api/lab/projects 공유).
+ * AR4 Lab 목록 API와 동일한 형태 (메인 대시보드·/api/lab/projects 공유).
  */
 @Getter
 @AllArgsConstructor
@@ -26,4 +27,19 @@ public class ProjectSummaryResponse {
     private final int feedbackCount;
     private final BigDecimal avgOverallScore;
     private final LocalDateTime createdAt;
+
+    public static ProjectSummaryResponse from(Project project) {
+        return new ProjectSummaryResponse(
+                project.getId(),
+                project.getTitle(),
+                project.getSummary(),
+                AuthorSummaryResponse.from(project.getAuthor()),
+                project.getThumbnailUrl(),
+                project.getViewCount(),
+                project.getLikeCount(),
+                project.getFeedbackCount(),
+                project.getAvgOverallScore(),
+                project.getCreatedAt()
+        );
+    }
 }

@@ -160,7 +160,7 @@ Base: `/api/community/posts`
 
 ---
 
-## 3. User Testing Lab (AR4) 🔜
+## 3. User Testing Lab (AR4) ✅
 
 Base: `/api/lab/projects`
 
@@ -222,7 +222,7 @@ Base: `/api/recruitment/posts`
 |--------|------|------|------|
 | GET | `/api/main/dashboard` | 🌐 | 메인 카드용 집계 데이터 |
 
-> Lab·모집 목록은 AR4/AR5 구현 전까지 `[]` 입니다. `latestCommunityPosts`만 최신 8건 채웁니다.
+> Lab 목록은 AR4 반영. `latestRecruitmentPosts`만 AR5 전까지 `[]` 입니다.
 
 **Response `data`**
 ```json
@@ -239,7 +239,7 @@ Base: `/api/recruitment/posts`
 
 ---
 
-## 6. Tech Stack (공통) 🔜
+## 6. Tech Stack (공통) ✅
 
 | Method | Path | Auth | 설명 |
 |--------|------|------|------|

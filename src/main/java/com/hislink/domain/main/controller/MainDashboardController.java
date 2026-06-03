@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(
         name = "Main",
-        description = "메인 대시보드 (AR2). Guest 조회 가능. Lab·모집은 AR4/AR5 구현 전까지 빈 목록입니다."
+        description = "메인 대시보드 (AR2). Guest 조회 가능. Lab은 AR4 데이터 반영. 모집(AR5)은 아직 빈 목록입니다."
 )
 @RestController
 @RequiredArgsConstructor
