@@ -30,6 +30,7 @@ public class ProjectDetailResponse {
     private final List<ProjectImageResponse> images;
     private final int viewCount;
     private final int likeCount;
+    private final boolean likedByMe;
     private final int feedbackCount;
     private final BigDecimal avgUiUxScore;
     private final BigDecimal avgFunctionalityScore;
@@ -37,7 +38,7 @@ public class ProjectDetailResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public static ProjectDetailResponse from(Project project, ProjectFileStorageService fileStorage) {
+    public static ProjectDetailResponse from(Project project, ProjectFileStorageService fileStorage, boolean likedByMe) {
         List<String> stackNames = project.getTechStacks().stream()
                 .map(TechStack::getName)
                 .sorted(Comparator.naturalOrder())
@@ -62,6 +63,7 @@ public class ProjectDetailResponse {
                 images,
                 project.getViewCount(),
                 project.getLikeCount(),
+                likedByMe,
                 project.getFeedbackCount(),
                 project.getAvgUiUxScore(),
                 project.getAvgFunctionalityScore(),

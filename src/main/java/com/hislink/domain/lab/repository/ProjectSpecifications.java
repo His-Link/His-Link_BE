@@ -18,7 +18,8 @@ public final class ProjectSpecifications {
         String pattern = "%" + keyword.trim().toLowerCase() + "%";
         return (root, query, cb) -> cb.or(
                 cb.like(cb.lower(root.get("title")), pattern),
-                cb.like(cb.lower(root.get("summary")), pattern)
+                cb.like(cb.lower(root.get("summary")), pattern),
+                cb.like(cb.lower(root.get("testRequest")), pattern)
         );
     }
 

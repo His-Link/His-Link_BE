@@ -79,6 +79,9 @@ public class Project extends BaseTimeEntity {
     private final List<ProjectImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ProjectLike> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Feedback> feedbacks = new ArrayList<>();
 
     @Builder
@@ -131,6 +134,16 @@ public class Project extends BaseTimeEntity {
 
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
     }
 
     public void applyFeedbackAggregates(

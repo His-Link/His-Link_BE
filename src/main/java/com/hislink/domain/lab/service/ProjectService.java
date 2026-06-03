@@ -6,11 +6,14 @@ import com.hislink.common.response.PageResponse;
 import com.hislink.common.security.AuthorValidator;
 import com.hislink.config.UploadProperties;
 import com.hislink.domain.auth.security.AuthenticatedUser;
+import com.hislink.domain.community.dto.LikeToggleResponse;
 import com.hislink.domain.lab.dto.ProjectDetailResponse;
 import com.hislink.domain.lab.entity.Project;
 import com.hislink.domain.lab.entity.ProjectImage;
+import com.hislink.domain.lab.entity.ProjectLike;
 import com.hislink.domain.lab.entity.ProjectSort;
 import com.hislink.domain.lab.repository.FeedbackRepository;
+import com.hislink.domain.lab.repository.ProjectLikeRepository;
 import com.hislink.domain.lab.repository.ProjectRepository;
 import com.hislink.domain.lab.repository.ProjectSpecifications;
 import com.hislink.domain.main.dto.ProjectSummaryResponse;
@@ -41,6 +44,7 @@ public class ProjectService {
     private static final int MAX_PAGE_SIZE = 50;
 
     private final ProjectRepository projectRepository;
+    private final ProjectLikeRepository projectLikeRepository;
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
     private final TechStackService techStackService;
@@ -77,7 +81,7 @@ public class ProjectService {
         addImages(project, images);
         syncCoverUrl(project);
 
-        return ProjectDetailResponse.from(project, fileStorage);
+        return toDetailResponse(project, false);
     }
 
     @Transactional(readOnly = true)
@@ -97,10 +101,29 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDetailResponse findById(Long projectId) {
+    public ProjectDetailResponse findById(Long projectId, AuthenticatedUser user) {
         Project project = getProjectWithDetails(projectId);
         project.increaseViewCount();
-        return ProjectDetailResponse.from(project, fileStorage);
+        return toDetailResponse(project, isLikedByMe(projectId, user));
+    }
+
+    @Transactional
+    public LikeToggleResponse toggleLike(Long projectId, AuthenticatedUser user) {
+        authorValidator.requireAuthenticated(user);
+        Project project = getProjectWithDetails(projectId);
+
+        return projectLikeRepository.findByProjectIdAndUserId(projectId, user.getUserId())
+                .map(existing -> {
+                    projectLikeRepository.delete(existing);
+                    project.decreaseLikeCount();
+                    return new LikeToggleResponse(false, project.getLikeCount());
+                })
+                .orElseGet(() -> {
+                    User liker = getUser(user.getUserId());
+                    projectLikeRepository.save(ProjectLike.builder().project(project).user(liker).build());
+                    project.increaseLikeCount();
+                    return new LikeToggleResponse(true, project.getLikeCount());
+                });
     }
 
     @Transactional
@@ -125,7 +148,7 @@ public class ProjectService {
         addImages(project, images);
         syncCoverUrl(project);
 
-        return ProjectDetailResponse.from(project, fileStorage);
+        return toDetailResponse(project, isLikedByMe(projectId, user));
     }
 
     @Transactional
@@ -268,6 +291,14 @@ public class ProjectService {
         for (ProjectImage image : project.getImages()) {
             fileStorage.delete(image.getStoredFileName());
         }
+    }
+
+    private ProjectDetailResponse toDetailResponse(Project project, boolean likedByMe) {
+        return ProjectDetailResponse.from(project, fileStorage, likedByMe);
+    }
+
+    private boolean isLikedByMe(Long projectId, AuthenticatedUser user) {
+        return user != null && projectLikeRepository.existsByProjectIdAndUserId(projectId, user.getUserId());
     }
 
     private User getUser(Long userId) {

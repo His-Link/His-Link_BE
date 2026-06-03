@@ -5,6 +5,7 @@ import com.hislink.common.response.PageResponse;
 import com.hislink.config.CurrentUser;
 import com.hislink.config.OpenApiConstants;
 import com.hislink.domain.auth.security.AuthenticatedUser;
+import com.hislink.domain.community.dto.LikeToggleResponse;
 import com.hislink.domain.lab.dto.ProjectDetailResponse;
 import com.hislink.domain.lab.entity.ProjectSort;
 import com.hislink.domain.lab.service.ProjectService;
@@ -60,9 +61,20 @@ public class LabProjectController {
     @Operation(summary = "프로젝트 상세", description = "조회수 +1")
     @GetMapping("/{projectId}")
     public ApiResponse<ProjectDetailResponse> findById(
-            @Parameter(description = "프로젝트 ID", example = "1") @PathVariable Long projectId
+            @Parameter(description = "프로젝트 ID", example = "1") @PathVariable Long projectId,
+            @CurrentUser AuthenticatedUser user
     ) {
-        return ApiResponse.ok(projectService.findById(projectId));
+        return ApiResponse.ok(projectService.findById(projectId, user));
+    }
+
+    @Operation(summary = "프로젝트 좋아요 토글", description = "좋아요 추가/취소 (AFR1 인기순)")
+    @SecurityRequirement(name = OpenApiConstants.BEARER_AUTH)
+    @PostMapping("/{projectId}/like")
+    public ApiResponse<LikeToggleResponse> toggleLike(
+            @PathVariable Long projectId,
+            @CurrentUser AuthenticatedUser user
+    ) {
+        return ApiResponse.ok(projectService.toggleLike(projectId, user));
     }
 
     @Operation(
