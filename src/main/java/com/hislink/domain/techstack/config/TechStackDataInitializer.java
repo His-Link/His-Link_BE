@@ -24,7 +24,8 @@ public class TechStackDataInitializer implements ApplicationRunner {
             "MySQL",
             "PostgreSQL",
             "Docker",
-            "Figma"
+            "Figma",
+            "기타"
     );
 
     private final TechStackRepository techStackRepository;
@@ -32,11 +33,10 @@ public class TechStackDataInitializer implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        if (techStackRepository.count() > 0) {
-            return;
-        }
         for (String name : DEFAULT_STACKS) {
-            techStackRepository.save(TechStack.builder().name(name).build());
+            if (!techStackRepository.existsByNameIgnoreCase(name)) {
+                techStackRepository.save(TechStack.builder().name(name).build());
+            }
         }
     }
 }
