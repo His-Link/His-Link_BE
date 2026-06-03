@@ -62,9 +62,11 @@ public class LabProjectController {
     @GetMapping("/{projectId}")
     public ApiResponse<ProjectDetailResponse> findById(
             @Parameter(description = "프로젝트 ID", example = "1") @PathVariable Long projectId,
+            @Parameter(description = "false면 조회수 증가 없이 상세만 조회")
+            @RequestParam(defaultValue = "true") boolean countView,
             @CurrentUser AuthenticatedUser user
     ) {
-        return ApiResponse.ok(projectService.findById(projectId, user));
+        return ApiResponse.ok(projectService.findById(projectId, user, countView));
     }
 
     @Operation(summary = "프로젝트 좋아요 토글", description = "좋아요 추가/취소 (AFR1 인기순)")

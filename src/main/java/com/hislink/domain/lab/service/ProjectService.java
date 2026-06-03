@@ -101,9 +101,11 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDetailResponse findById(Long projectId, AuthenticatedUser user) {
+    public ProjectDetailResponse findById(Long projectId, AuthenticatedUser user, boolean countView) {
         Project project = getProjectWithDetails(projectId);
-        project.increaseViewCount();
+        if (countView) {
+            project.increaseViewCount();
+        }
         return toDetailResponse(project, isLikedByMe(projectId, user));
     }
 

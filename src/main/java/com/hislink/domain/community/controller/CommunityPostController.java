@@ -62,9 +62,11 @@ public class CommunityPostController {
     @GetMapping("/{postId}")
     public ApiResponse<CommunityPostDetailResponse> findById(
             @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
+            @Parameter(description = "false면 조회수 증가 없이 상세만 조회 (목록 갱신·중복 방지용)")
+            @RequestParam(defaultValue = "true") boolean countView,
             @CurrentUser AuthenticatedUser user
     ) {
-        return ApiResponse.ok(communityPostService.findById(postId, user));
+        return ApiResponse.ok(communityPostService.findById(postId, user, countView));
     }
 
     @Operation(summary = "게시글 작성", description = "Query Parameter로 제목·본문·카테고리를 전달합니다.")
