@@ -114,14 +114,30 @@ erDiagram
         bigint author_id FK
         varchar title
         text description
+        varchar activity_type
         varchar recruitment_role
         varchar status
         int participant_limit
         int current_count
+        varchar thumbnail_url
         datetime deadline
         varchar contact_method
         datetime created_at
         datetime updated_at
+    }
+
+    recruitment_post_images {
+        bigint id PK
+        bigint recruitment_post_id FK
+        varchar stored_file_name
+        int sort_order
+    }
+
+    project_images {
+        bigint id PK
+        bigint project_id FK
+        varchar stored_file_name
+        int sort_order
     }
 
     recruitment_tech_stack {
@@ -172,7 +188,7 @@ erDiagram
 | token_hash | VARCHAR(64) | NOT NULL, UK | refresh JWT SHA-256 |
 | expires_at | DATETIME | NOT NULL | 만료 |
 
-### 2.3 community_post (AR3 — 2단계 구현 예정)
+### 2.3 community_post (AR3) ✅
 
 | 컬럼 | 타입 | 제약 | 설명 |
 |------|------|------|------|
@@ -265,7 +281,16 @@ erDiagram
 | project_id | BIGINT | PK, FK |
 | tech_stack_id | BIGINT | PK, FK |
 
-### 2.10 recruitment_post (AR5)
+### 2.9a project_image (AR4)
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| id | BIGINT | PK, AI | |
+| project_id | BIGINT | FK → project.id | |
+| stored_file_name | VARCHAR(255) | NOT NULL | 업로드 파일명 |
+| sort_order | INT | NOT NULL | 표시 순서 |
+
+### 2.10 recruitment_post (AR5) ✅
 
 | 컬럼 | 타입 | 제약 | 설명 |
 |------|------|------|------|
@@ -273,16 +298,27 @@ erDiagram
 | author_id | BIGINT | FK → users.id | |
 | title | VARCHAR(200) | NOT NULL | |
 | description | TEXT | NOT NULL | |
-| recruitment_role | VARCHAR(30) | NOT NULL | FRONTEND, BACKEND, AI_DATA, DESIGN, PM 등 |
+| activity_type | VARCHAR(30) | NOT NULL | PROJECT, HACKATHON, CONTEST, COMPETITION |
+| recruitment_role | VARCHAR(30) | NOT NULL | FRONTEND, BACKEND, AI_DATA, DESIGN, PM, OTHER |
 | status | VARCHAR(20) | NOT NULL | OPEN, CLOSED |
 | participant_limit | INT | NOT NULL | |
-| current_count | INT | DEFAULT 0 | |
+| current_count | INT | DEFAULT 0 | 지원 인원 |
+| thumbnail_url | VARCHAR(500) | | 첫 이미지 URL |
 | deadline | DATETIME | | |
 | contact_method | VARCHAR(200) | | |
 | created_at | DATETIME | NOT NULL | |
 | updated_at | DATETIME | NOT NULL | |
 
-**인덱스:** `(status, recruitment_role, created_at DESC)`
+**인덱스:** `(status, recruitment_role, created_at DESC)` — activity_type 필터는 애플리케이션 쿼리
+
+### 2.10a recruitment_post_image (AR5)
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| id | BIGINT | PK, AI | |
+| recruitment_post_id | BIGINT | FK → recruitment_post.id | |
+| stored_file_name | VARCHAR(255) | NOT NULL | |
+| sort_order | INT | NOT NULL | |
 
 ### 2.11 recruitment_tech_stack (M:N)
 
@@ -311,6 +347,7 @@ erDiagram
 |------|-----|-------------|
 | Role | USER, ADMIN | users |
 | PostCategory | FREE, QNA, INFO, TROUBLESHOOTING | community_post |
+| RecruitmentActivityType | PROJECT, HACKATHON, CONTEST, COMPETITION | recruitment_post |
 | RecruitmentRole | FRONTEND, BACKEND, AI_DATA, DESIGN, PM, OTHER | recruitment_post |
 | RecruitmentStatus | OPEN, CLOSED | recruitment_post |
 | ProjectSort | LATEST, POPULAR, FEEDBACK | project 목록 쿼리 |
@@ -329,9 +366,9 @@ erDiagram
 
 ---
 
-## 5. 구현 우선순위
+## 5. 구현 우선순위 (완료 기준)
 
-1. **community_post, comment, post_like** (2단계)
-2. project, feedback, tech_stack (3단계)
-3. recruitment_post, recruitment_comment (4단계)
-4. main 집계는 API만 (5단계)
+1. ✅ community_post, comment, post_like (AR3)
+2. ✅ project, project_image, feedback, tech_stack (AR4)
+3. ✅ recruitment_post, recruitment_post_image, recruitment_comment (AR5)
+4. ✅ main 집계 API (AR2)

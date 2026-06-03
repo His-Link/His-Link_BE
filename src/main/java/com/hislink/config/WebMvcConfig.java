@@ -19,5 +19,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         Path projectUploadDir = Paths.get(uploadProperties.getDir(), "projects").toAbsolutePath().normalize();
         registry.addResourceHandler("/uploads/projects/**")
                 .addResourceLocations("file:" + projectUploadDir + "/");
+
+        Path recruitmentUploadDir = Paths.get(uploadProperties.getDir(), "recruitment").toAbsolutePath().normalize();
+        registry.addResourceHandler("/uploads/recruitment/**")
+                .addResourceLocations("file:" + recruitmentUploadDir + "/");
     }
 }

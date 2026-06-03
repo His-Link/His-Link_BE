@@ -15,4 +15,5 @@ public class UploadProperties {
     private String publicBaseUrl = "http://localhost:8080";
     private long maxFileSizeBytes = 5 * 1024 * 1024;
     private int maxImagesPerProject = 10;
+    private int maxImagesPerRecruitmentPost = 10;
 }

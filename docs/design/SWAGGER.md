@@ -6,7 +6,9 @@ UI: `http://localhost:8080/swagger-ui/index.html`
 
 ## 1. Controller (Swagger 친화 — Query Parameter 우선)
 
-작성·수정 API는 **Request body 대신 `@RequestParam`** 을 사용합니다. Swagger UI에서 Parameters만 채우면 됩니다.
+일반 작성·수정 API는 **Request body 대신 `@RequestParam`** 을 사용합니다. Swagger UI에서 Parameters만 채우면 됩니다.
+
+**예외 (multipart):** Lab 프로젝트·팀 모집글 작성/수정은 `consumes = MULTIPART_FORM_DATA` 이며, 텍스트 필드는 `@RequestParam`, 이미지는 `images` 파일 필드로 전송합니다.
 
 ```java
 @Validated
