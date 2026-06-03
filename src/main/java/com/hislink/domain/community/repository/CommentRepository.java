@@ -1,6 +1,7 @@
 package com.hislink.domain.community.repository;
 
 import com.hislink.domain.community.entity.Comment;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"author", "post"})
     @Query("SELECT c FROM Comment c WHERE c.id = :id")
     Optional<Comment> findByIdWithAuthor(@Param("id") Long id);
+
+    @EntityGraph(attributePaths = {"author", "post"})
+    @Query("SELECT c FROM Comment c ORDER BY c.createdAt DESC")
+    List<Comment> findLatestWithAuthor(Pageable pageable);
 }

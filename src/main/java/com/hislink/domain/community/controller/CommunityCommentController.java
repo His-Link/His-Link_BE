@@ -5,6 +5,7 @@ import com.hislink.config.CurrentUser;
 import com.hislink.config.OpenApiConstants;
 import com.hislink.domain.auth.security.AuthenticatedUser;
 import com.hislink.domain.community.dto.CommentResponse;
+import com.hislink.domain.community.dto.LatestCommentResponse;
 import com.hislink.domain.community.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +29,15 @@ import java.util.List;
 public class CommunityCommentController {
 
     private final CommentService commentService;
+
+    @Operation(summary = "최신 댓글", description = "전체 게시글 기준 최신 댓글 (Guest 가능, 사이드바용)")
+    @GetMapping("/api/community/comments/latest")
+    public ApiResponse<List<LatestCommentResponse>> findLatest(
+            @Parameter(description = "개수 (최대 20)", example = "5")
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return ApiResponse.ok(commentService.findLatest(size));
+    }
 
     @Operation(summary = "댓글 목록", description = "게시글의 댓글 목록 (Guest 가능)")
     @GetMapping("/api/community/posts/{postId}/comments")

@@ -26,6 +26,7 @@ public class SecurityConfig {
             "/login/oauth2/**",
             "/api/community/posts",
             "/api/community/posts/**",
+            "/api/community/comments/latest",
             "/api/lab/projects",
             "/api/lab/projects/**",
             "/api/tech-stacks",

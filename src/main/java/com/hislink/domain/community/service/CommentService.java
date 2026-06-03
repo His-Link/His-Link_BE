@@ -5,12 +5,14 @@ import com.hislink.common.exception.ErrorCode;
 import com.hislink.common.security.AuthorValidator;
 import com.hislink.domain.auth.security.AuthenticatedUser;
 import com.hislink.domain.community.dto.CommentResponse;
+import com.hislink.domain.community.dto.LatestCommentResponse;
 import com.hislink.domain.community.entity.Comment;
 import com.hislink.domain.community.entity.CommunityPost;
 import com.hislink.domain.community.repository.CommentRepository;
 import com.hislink.domain.user.entity.User;
 import com.hislink.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,15 @@ public class CommentService {
         communityPostService.getPostWithAuthor(postId);
         return commentRepository.findByPostIdWithAuthor(postId).stream()
                 .map(CommentResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LatestCommentResponse> findLatest(int size) {
+        int safeSize = Math.min(Math.max(size, 1), 20);
+        PageRequest pageable = PageRequest.of(0, safeSize);
+        return commentRepository.findLatestWithAuthor(pageable).stream()
+                .map(LatestCommentResponse::from)
                 .collect(Collectors.toList());
     }
 
