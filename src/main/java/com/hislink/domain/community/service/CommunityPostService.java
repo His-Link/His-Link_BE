@@ -73,9 +73,11 @@ public class CommunityPostService {
     }
 
     @Transactional
-    public CommunityPostDetailResponse findById(Long postId, AuthenticatedUser user) {
+    public CommunityPostDetailResponse findById(Long postId, AuthenticatedUser user, boolean countView) {
         CommunityPost post = getPostWithAuthor(postId);
-        post.increaseViewCount();
+        if (countView) {
+            post.increaseViewCount();
+        }
 
         boolean likedByMe = user != null
                 && postLikeRepository.existsByPostIdAndUserId(postId, user.getUserId());
