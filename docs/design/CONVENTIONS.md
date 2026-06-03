@@ -182,14 +182,14 @@ com.hislink
 │   ├── main/          (✅ AR2)
 │   ├── lab/           (✅ AR4)
 │   ├── techstack/     (✅ 공통)
-│   └── recruitment/   (🔜 AR5)
+│   └── recruitment/   (✅ AR5)
 ```
 
 ---
 
 ## 11. FE 연동 체크리스트
 
-- [ ] `httpClient`가 `ApiResponse.data`만 반환하는지 확인
-- [ ] 목록 화면: `PageResponse.content` 사용
-- [ ] 401 시 refresh → 재시도 또는 로그아웃
-- [ ] 403 시 사용자 안내 토스트
+- [x] `httpClient`가 `ApiResponse.data`만 반환 (`unwrapApiResponse`)
+- [x] 목록 화면: `PageResponse.content` 사용
+- [x] 401 시 refresh → 1회 재시도, 실패 시 로그아웃·`/login` (`httpClient` + `tokenRefresh`)
+- [x] 403 시 사용자 안내 토스트 (`showToast`)

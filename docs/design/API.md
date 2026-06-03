@@ -77,6 +77,7 @@ Base: `/api/community/posts`
 | POST | `/api/community/posts/{postId}/comments` | 👤 | 댓글 작성 |
 | PUT | `/api/community/comments/{commentId}` | 👤 | 댓글 수정 |
 | DELETE | `/api/community/comments/{commentId}` | 👤 | 댓글 삭제 |
+| GET | `/api/community/comments/latest` | 🌐 | 최신 댓글 (사이드바) |
 
 ### GET `/api/community/posts`
 
@@ -132,6 +133,12 @@ Base: `/api/community/posts`
 
 **Query:** `content`
 
+### GET `/api/community/comments/latest`
+
+**Query:** `size` (default 5, max 20)
+
+**Response `data`** — `LatestCommentResponse[]` (게시글 제목·카테고리·댓글 요약 포함)
+
 ### GET `/api/community/posts/{postId}`
 
 **Response `data`**
@@ -171,6 +178,7 @@ Base: `/api/lab/projects`
 | POST | `/api/lab/projects` | 👤 | 프로젝트 등록 |
 | PUT | `/api/lab/projects/{projectId}` | 👤 | 수정 |
 | DELETE | `/api/lab/projects/{projectId}` | 👤 | 삭제 |
+| POST | `/api/lab/projects/{projectId}/like` | 👤 | 좋아요 토글 |
 | GET | `/api/lab/projects/{projectId}/feedbacks` | 🌐 | 피드백 목록 |
 | POST | `/api/lab/projects/{projectId}/feedbacks` | 👤 | 피드백 작성 |
 | PUT | `/api/lab/feedbacks/{feedbackId}` | 👤 | 피드백 수정 |
@@ -179,6 +187,27 @@ Base: `/api/lab/projects`
 ### GET `/api/lab/projects`
 
 **Query:** `sort=LATEST|POPULAR|FEEDBACK`, `keyword`, `techStack`, `page`, `size`
+
+### POST `/api/lab/projects` · PUT `/api/lab/projects/{projectId}`
+
+**Content-Type:** `multipart/form-data`
+
+| Field | 설명 |
+|-------|------|
+| title, summary | 필수 |
+| serviceUrl, githubUrl, testRequest | 선택 |
+| techStackIds | 반복 파라미터 |
+| images | 신규 이미지 (최대 10장, JPEG/PNG/WEBP/GIF) |
+| deleteImageIds | 수정 시 삭제할 이미지 ID (반복) |
+
+정적 파일 URL: `/uploads/projects/{filename}`
+
+### POST `/api/lab/projects/{projectId}/like`
+
+**Response `data`**
+```json
+{ "liked": true, "likeCount": 12 }
+```
 
 ### POST `/api/lab/projects/{projectId}/feedbacks`
 
@@ -196,7 +225,7 @@ Base: `/api/lab/projects`
 
 ---
 
-## 4. 팀 모집 (AR5) 🔜
+## 4. 팀 모집 (AR5) ✅
 
 Base: `/api/recruitment/posts`
 
@@ -204,15 +233,83 @@ Base: `/api/recruitment/posts`
 |--------|------|------|------|
 | GET | `/api/recruitment/posts` | 🌐 | 목록 (필터) |
 | GET | `/api/recruitment/posts/{postId}` | 🌐 | 상세 |
-| POST | `/api/recruitment/posts` | 👤 | 모집글 작성 |
-| PUT | `/api/recruitment/posts/{postId}` | 👤 | 수정 |
+| POST | `/api/recruitment/posts` | 👤 | 모집글 작성 (multipart) |
+| PUT | `/api/recruitment/posts/{postId}` | 👤 | 수정 (multipart) |
 | DELETE | `/api/recruitment/posts/{postId}` | 👤 | 삭제 |
 | GET | `/api/recruitment/posts/{postId}/comments` | 🌐 | 댓글/지원 목록 |
 | POST | `/api/recruitment/posts/{postId}/comments` | 👤 | 댓글·지원 |
+| PUT | `/api/recruitment/comments/{commentId}` | 👤 | 댓글 수정 |
+| DELETE | `/api/recruitment/comments/{commentId}` | 👤 | 댓글 삭제 |
 
 ### GET `/api/recruitment/posts`
 
-**Query:** `role`, `techStack`, `status=OPEN|CLOSED`, `page`, `size`
+**Query**
+
+| Param | 설명 |
+|-------|------|
+| activityType | PROJECT, HACKATHON, CONTEST, COMPETITION (빈 값 = 전체) |
+| role | FRONTEND, BACKEND, AI_DATA, DESIGN, PM, OTHER |
+| status | OPEN, CLOSED |
+| techStack | 기술 스택 이름 |
+| page, size, sort | 페이징 (기본 `createdAt,desc`) |
+
+**Response `data`** — `PageResponse<RecruitmentPostSummaryResponse>`
+```json
+{
+  "content": [
+    {
+      "id": 1,
+      "title": "해커톤 프론트 모집",
+      "descriptionPreview": "React 경험자...",
+      "activityType": "HACKATHON",
+      "recruitmentRole": "FRONTEND",
+      "status": "OPEN",
+      "author": { "id": 2, "name": "김개발" },
+      "currentCount": 1,
+      "participantLimit": 3,
+      "thumbnailUrl": "/uploads/recruitment/abc.jpg",
+      "deadline": "2026-06-30T23:59:59",
+      "createdAt": "2026-05-20T10:00:00"
+    }
+  ],
+  "page": 0,
+  "size": 12,
+  "totalElements": 1,
+  "totalPages": 1,
+  "first": true,
+  "last": true
+}
+```
+
+### GET `/api/recruitment/posts/{postId}`
+
+**Response `data`** — `RecruitmentPostDetailResponse` (description 전체, images[], techStacks[])
+
+### POST `/api/recruitment/posts` · PUT `/api/recruitment/posts/{postId}`
+
+**Content-Type:** `multipart/form-data`
+
+| Field | 설명 |
+|-------|------|
+| title, description | 필수 |
+| activityType | PROJECT, HACKATHON, CONTEST, COMPETITION |
+| recruitmentRole | 필수 |
+| status | OPEN, CLOSED (작성 시 생략 가능 → OPEN) |
+| participantLimit | 필수, ≥1 |
+| deadline | ISO-8601 datetime (선택) |
+| contactMethod | 선택 |
+| techStackIds | 반복 파라미터 |
+| images | 신규 이미지 (최대 10장) |
+| deleteImageIds | 수정 시 삭제할 이미지 ID (반복) |
+
+### POST `/api/recruitment/posts/{postId}/comments`
+
+**Query:** `content`, `application` (boolean, default false)
+
+- `application=true`: 지원 처리 (`currentCount` 증가, 정원 시 `CLOSED`)
+- 작성자·중복 지원·마감글은 400
+
+정적 파일 URL: `/uploads/recruitment/{filename}`
 
 ---
 
@@ -222,7 +319,7 @@ Base: `/api/recruitment/posts`
 |--------|------|------|------|
 | GET | `/api/main/dashboard` | 🌐 | 메인 카드용 집계 데이터 |
 
-> Lab 목록은 AR4 반영. `latestRecruitmentPosts`만 AR5 전까지 `[]` 입니다.
+> `latestRecruitmentPosts`는 AR5 `RecruitmentPostSummaryResponse` 형식 (최대 8건).
 
 **Response `data`**
 ```json
@@ -266,4 +363,5 @@ Base: `/api/recruitment/posts`
 ## 8. Swagger
 
 - UI: `http://localhost:8080/swagger-ui/index.html`
-- 구현 시 `@Operation`, `@Tag`로 커뮤니티·Lab·Recruitment 그룹 추가 예정
+- `@Tag`: Community, Lab, Recruitment, Main, Auth 등 도메인별 그룹화 완료
+- Lab·Recruitment 작성/수정은 Swagger에서 **multipart** 로 테스트 (상세는 [SWAGGER.md](./SWAGGER.md))

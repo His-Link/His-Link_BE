@@ -14,8 +14,8 @@
 | 0 | 설계 문서 (본 폴더) | ✅ |
 | 1 | 공통 인프라 (`BaseTimeEntity`, `BusinessException`, `PageResponse`, `AuthorValidator`) | ✅ |
 | 2 | AR3 커뮤니티 | ✅ |
-| 3 | AR2 메인 대시보드 | ✅ (모집 미리보기는 AR5 이후) |
+| 3 | AR2 메인 대시보드 | ✅ (`latestRecruitmentPosts` 포함) |
 | 4 | AR4 User Testing Lab | ✅ |
-| 5 | AR5 팀 모집 | 🔜 |
+| 5 | AR5 팀 모집 | ✅ |
 
 2단계 시작 전에 본 문서를 팀과 공유·리뷰하는 것을 권장합니다.

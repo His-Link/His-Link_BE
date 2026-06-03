@@ -31,6 +31,8 @@ public class SecurityConfig {
             "/api/lab/projects/**",
             "/api/tech-stacks",
             "/api/main/dashboard",
+            "/api/recruitment/posts",
+            "/api/recruitment/posts/**",
             "/uploads/**"
     };
 

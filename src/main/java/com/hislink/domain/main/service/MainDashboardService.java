@@ -8,13 +8,13 @@ import com.hislink.domain.lab.service.ProjectService;
 import com.hislink.domain.main.dto.MainDashboardResponse;
 import com.hislink.domain.main.dto.ProjectSummaryResponse;
 import com.hislink.domain.main.dto.RecruitmentPostSummaryResponse;
+import com.hislink.domain.recruitment.service.RecruitmentPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +27,14 @@ public class MainDashboardService {
     private final CommunityPostRepository communityPostRepository;
     private final CommentRepository commentRepository;
     private final ProjectService projectService;
+    private final RecruitmentPostService recruitmentPostService;
 
     @Transactional(readOnly = true)
     public MainDashboardResponse getDashboard() {
         return new MainDashboardResponse(
                 projectService.findLatestPreview(PREVIEW_SIZE),
                 fetchLatestCommunityPosts(),
-                emptyRecruitmentPosts(),
+                recruitmentPostService.findLatestPreview(PREVIEW_SIZE),
                 projectService.findPopularPreview(PREVIEW_SIZE),
                 projectService.findTopFeedbackPreview(PREVIEW_SIZE)
         );
@@ -53,7 +54,4 @@ public class MainDashboardService {
         );
     }
 
-    private static List<RecruitmentPostSummaryResponse> emptyRecruitmentPosts() {
-        return Collections.emptyList();
-    }
 }
